@@ -1,0 +1,25 @@
+// import { ManyToMany } from "typeorm";
+import auth from "../config/middleware/auth";
+import { ManyToMany, craeteM2m } from "../controller/Relation/M2MController";
+import { createUser, getUsers } from "../controller/User/user";
+import { createProduct, deleteProduct, getApi, getProduct, updateProduct } from "../controller/productController";
+const Many2OneController = require('../controller/Relation/Many2OneController') 
+const M2MController = require('../controller/Relation/M2MController')
+const express = require("express")
+const router = express.Router()
+const V = require("../config/valiadtion/validation")
+
+
+router.get('/users',getUsers)
+router.post('/user',createUser)
+
+router.post('/createEmp',Many2OneController.createEmp)
+router.get('/manyToOne',Many2OneController.manyToOne)
+router.get('/oneToMany',Many2OneController.oneToMany)
+
+
+router.post('/craeteM2m',craeteM2m)
+router.get('/ManyToMany',ManyToMany)
+
+
+export default router
