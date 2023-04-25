@@ -7,7 +7,7 @@ import { Photo } from "../../entity/Photo";
 import { Employee } from "../../entity/Employee";
 import { Question } from "../../entity/Question";
 import { Category } from "../../entity/Category";
-
+import { Project } from "../../entity/Project";
 
 const craeteM2m = async (req: Request, res: Response) => {
   try {
@@ -46,9 +46,36 @@ const ManyToMany = async (req: Request, res: Response) => {
   }
 };
 
+const ProjectToEmployeeM2M = async (req: Request, res: Response) => {
+  try {
+    const project = new Project();
+    project.projectName = req.body.projectName;
+    const employeeRepositry = datasource.getRepository(Employee);
+    const splitArr = req.body.employeeStr.split(",");
 
-export {
-  craeteM2m,
-  ManyToMany
+    let pushArr: any = [];
 
-}
+    await Promise.all(
+      splitArr.map(async (ele: any, index: any) => {
+        const catfind = await employeeRepositry.findOne({
+          where: { id: Number(ele) },
+        });
+        console.log(catfind, "catfind");
+
+        pushArr.push(catfind);
+      }),
+    );
+
+    console.log(pushArr, "pushArr");
+    project.employees = pushArr;
+
+    await datasource.manager.save(project);
+    return MessageResponse(req, res, project, 201);
+  } catch (error) {
+    console.log(error, "eroo");
+
+    return ErrorMessage(req, res, error, 412);
+  }
+};
+
+export { craeteM2m, ManyToMany, ProjectToEmployeeM2M };

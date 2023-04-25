@@ -34,6 +34,7 @@ const createEmp = async (req: Request, res: Response) => {
         await datasource.manager.save(photo1);
         console.log(photo1);
         arr.push(photo1);
+        
       })
     );
 

@@ -1,6 +1,6 @@
 // import { ManyToMany } from "typeorm";
 import auth from "../config/middleware/auth";
-import { ManyToMany, craeteM2m } from "../controller/Relation/M2MController";
+import { ManyToMany, ProjectToEmployeeM2M, craeteM2m } from "../controller/Relation/M2MController";
 import { createUser, getUsers } from "../controller/User/user";
 import { createProduct, deleteProduct, getApi, getProduct, updateProduct } from "../controller/productController";
 const Many2OneController = require('../controller/Relation/Many2OneController') 
@@ -20,6 +20,8 @@ router.get('/oneToMany',Many2OneController.oneToMany)
 
 router.post('/craeteM2m',craeteM2m)
 router.get('/ManyToMany',ManyToMany)
+router.post('/ProjectToEmployeeM2M',ProjectToEmployeeM2M)
+
 
 
 export default router

@@ -1,3 +1,6 @@
+import { Employee } from "../entity/Employee";
+import { Photo } from "../entity/Photo";
+import { Project } from "../entity/Project";
 
 var connection = require("typeorm")
 
@@ -5,11 +8,12 @@ var datasource = new connection.DataSource({
     type: "mysql",
     host: "localhost",
     username: "root",
-    password: "password",
-    database: "typeormMysql",
+    password: "",
+    database: "typeorm_mysql",
     port:3306,
-    // synchronize: true,
-    entities: ['src/entity/*.ts'],  //import entity name or entity file name
+    synchronize: true,
+    entities: [Employee,Project,Photo],
+    // entities: ['src/entity/*.ts'],  
     migrations: ['src/migration/*.ts'],
     migrationsTableName:"migrations",
     cli: { 
