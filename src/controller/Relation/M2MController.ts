@@ -104,11 +104,9 @@ const updateProjectToEmployeeM2M = async (req: Request, res: Response) => {
       project.employees.push(...copyEmps);
       await datasource.manager.save(project);
       return MessageResponse(req, res, project, 201);
-
-    }else{
-      return MessageResponse(req,res,'project not found',412)
+    } else {
+      return MessageResponse(req, res, "project not found", 412);
     }
-
   } catch (error) {
     console.log(error, "eroo");
 
@@ -116,4 +114,43 @@ const updateProjectToEmployeeM2M = async (req: Request, res: Response) => {
   }
 };
 
-export { craeteM2m, ManyToMany, ProjectToEmployeeM2M,updateProjectToEmployeeM2M };
+const deleteProjectToEmployeeM2M = async (req: Request, res: Response) => {
+  try {
+    const projectRepository = await datasource.getRepository(Project);
+    const splitArr = req.body.employeeStr.split(",");
+
+    const project = await projectRepository.findOne({
+      relations: {
+        employees: true,
+      },
+      where: { id: Number(req.body.projectId) },
+    });
+
+    if (project) {
+
+      project.employees = project.employees.filter((employee: any) => {
+
+        console.log(!splitArr.includes(String(employee.id)),'!splitArr.includes(employee.id)');
+        
+        return !splitArr.includes(String(employee.id));
+      });
+
+      await datasource.manager.save(project);
+      return MessageResponse(req, res, project, 201);
+    } else {
+      return MessageResponse(req, res, "project not found", 412);
+    }
+  } catch (error) {
+    console.log(error, "eroo");
+
+    return ErrorMessage(req, res, error, 412);
+  }
+};
+
+export {
+  craeteM2m,
+  ManyToMany,
+  ProjectToEmployeeM2M,
+  updateProjectToEmployeeM2M,
+  deleteProjectToEmployeeM2M,
+};
