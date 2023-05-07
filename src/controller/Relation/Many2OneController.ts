@@ -9,21 +9,21 @@ import { Employee } from "../../entity/Employee";
 
 const createEmp = async (req: Request, res: Response) => {
   try {
-    
+
     let photoArr = req.body.photos;
     let arr: any = [];
 
     const emp = new Employee();
-   
+
     emp.name = req.body.name;
     emp.age = req.body.age;
     emp.salary = req.body.salary;
-    
+
     const empId = await datasource.manager.save(emp);
 
-    console.log("arr",empId);
-    console.log('1',emp);
-    
+    console.log("arr", empId);
+    console.log('1', emp);
+
 
     await Promise.all(
       photoArr.map(async (ele: any, index: any) => {
@@ -34,7 +34,7 @@ const createEmp = async (req: Request, res: Response) => {
         await datasource.manager.save(photo1);
         console.log(photo1);
         arr.push(photo1);
-        
+
       })
     );
 
@@ -42,7 +42,7 @@ const createEmp = async (req: Request, res: Response) => {
     return MessageResponse(req, res, emp, 201);
 
   } catch (error) {
-    console.log(error, "error");  
+    console.log(error, "error");
     return ErrorMessage(req, res, error, 412);
   }
 };
@@ -54,8 +54,16 @@ const oneToMany = async (req: Request, res: Response) => {
       relations: {
         photos: true,
       },
+      // where:{}
     });
-    return MessageResponse(req, res, Emps, 201);
+    const result = await empRepositry
+      .createQueryBuilder('employee')
+      .leftJoinAndSelect("employee.photos", "photo")
+      .where(`employee.salary >= (15000)`)
+      .getOne();
+
+
+    return MessageResponse(req, res, result, 201);
   } catch (error) {
     console.log(error, "eroo");
 
